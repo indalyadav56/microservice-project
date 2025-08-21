@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -49,8 +50,9 @@ func (s *Server) Start() error {
 }
 
 // Stop gracefully stops the gRPC server
-func (s *Server) Stop() {
+func (s *Server) Stop(ctx context.Context) error {
 	if s.grpcServer != nil {
 		s.grpcServer.GracefulStop()
 	}
+	return nil
 }

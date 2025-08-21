@@ -2,37 +2,28 @@ package domain
 
 import "time"
 
-// AuthService defines the interface for authentication operations
-type AuthService interface {
-	Login(username, password string) (*LoginResponse, error)
-	Register(user *User) (*RegisterResponse, error)
-	ValidateToken(token string) (*User, error)
-	RefreshToken(refreshToken string) (*TokenResponse, error)
-	Logout(token string) error
+type UserService interface {
+	CreateUser(user *User) error
+	GetUser(id string) (*User, error)
+	UpdateUser(user *User) error
+	DeleteUser(id string) error
+	ListUsers(limit, offset int) ([]*User, error)
+	ValidateUser(user *User) error
 }
 
-// LoginResponse represents the response from a login operation
-type LoginResponse struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
-	Success      bool   `json:"success"`
-	Message      string `json:"message"`
-	User         *User  `json:"user,omitempty"`
-	ExpiresAt    int64  `json:"expires_at"`
-}
+// ------------------------------
+// ------------------------------
+// ------------------------------
+// ------------------------------
+// ------------------------------
+// ------------------------------
+// ------------------------------
 
 // RegisterResponse represents the response from a registration operation
 type RegisterResponse struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
 	User    *User  `json:"user,omitempty"`
-}
-
-// TokenResponse represents a token response
-type TokenResponse struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
-	ExpiresAt    int64  `json:"expires_at"`
 }
 
 // CreateUserRequest represents a request to create a user

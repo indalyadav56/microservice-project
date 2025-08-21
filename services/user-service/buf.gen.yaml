@@ -1,0 +1,15 @@
+version: v1
+plugins:
+  - plugin: go
+    out: .
+  - plugin: go-grpc
+    out: .
+  - remote: buf.build/grpc/go
+    repo: buf.build/grpc/go
+    commit: 1.0.0
+    version: 1.0.0
+    plugin: go
+    out: .
+    opt:
+      paths=source_relative
+      plugins=grpc

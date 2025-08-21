@@ -11,9 +11,9 @@ grpc:
   port: 9090
 
 database:
-  name: "user_service"
+  name: "users"
   host: "localhost"
   port: 5432
   username: "postgres"
-  password: "password"
+  password: "postgres"
   ssl_mode: "disable"

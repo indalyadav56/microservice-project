@@ -5,19 +5,16 @@ import (
 	"fmt"
 
 	"user-service/internal/domain"
-	"user-service/internal/usecase"
 	pb "user-service/pb"
 )
 
 type UserGRPCHandler struct {
 	pb.UnimplementedAuthServiceServer
-	authService domain.AuthService
-	userService *usecase.UserService
+	userService domain.UserService
 }
 
-func NewUserGRPCHandler(authService domain.AuthService, userService *usecase.UserService) *UserGRPCHandler {
+func NewUserGRPCHandler(userService domain.UserService) *UserGRPCHandler {
 	return &UserGRPCHandler{
-		authService: authService,
 		userService: userService,
 	}
 }
@@ -34,19 +31,17 @@ func (h *UserGRPCHandler) Register(ctx context.Context, req *pb.RegisterRequest)
 		Role:      req.Role,
 	}
 
-	// Call the auth service
-	response, err := h.authService.Register(user)
-	if err != nil {
+	if err := h.userService.CreateUser(user); err != nil {
 		return &pb.RegisterResponse{
 			Success: false,
-			Message: "Internal server error",
-		}, err
+			Message: fmt.Sprintf("Failed to register user: %v", err),
+		}, nil
 	}
 
 	// Convert domain response to protobuf response
 	return &pb.RegisterResponse{
-		Success: response.Success,
-		Message: response.Message,
+		Success: true,
+		Message: "User registered successfully",
 	}, nil
 }
 
@@ -134,36 +129,36 @@ func (h *UserGRPCHandler) ListUsers(ctx context.Context, req *pb.ListUsersReques
 		offset = 0
 	}
 
-	response, err := h.userService.GetUserListResponse(limit, offset)
-	if err != nil {
-		return &pb.ListUsersResponse{
-			Success: false,
-			Message: fmt.Sprintf("Failed to list users: %v", err),
-		}, nil
-	}
+	// response, err := h.userService.GetUserListResponse(limit, offset)
+	// if err != nil {
+	// 	return &pb.ListUsersResponse{
+	// 		Success: false,
+	// 		Message: fmt.Sprintf("Failed to list users: %v", err),
+	// 	}, nil
+	// }
 
 	// Convert domain users to protobuf users
 	var protoUsers []*pb.User
-	for _, user := range response.Users {
-		protoUsers = append(protoUsers, &pb.User{
-			Id:        user.ID,
-			Username:  user.Username,
-			Email:     user.Email,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			IsActive:  user.IsActive,
-			Role:      user.Role,
-		})
-	}
+	// for _, user := range response.Users {
+	// 	protoUsers = append(protoUsers, &pb.User{
+	// 		Id:        user.ID,
+	// 		Username:  user.Username,
+	// 		Email:     user.Email,
+	// 		FirstName: user.FirstName,
+	// 		LastName:  user.LastName,
+	// 		IsActive:  user.IsActive,
+	// 		Role:      user.Role,
+	// 	})
+	// }
 
 	return &pb.ListUsersResponse{
-		Success:    true,
-		Message:    "Users retrieved successfully",
-		Users:      protoUsers,
-		Total:      response.Total,
-		Limit:      int32(response.Limit),
-		Offset:     int32(response.Offset),
-		HasMore:    response.HasMore,
-		NextOffset: int32(response.NextOffset),
+		Success: true,
+		Message: "Users retrieved successfully",
+		Users:   protoUsers,
+		// Total:      response.Total,
+		// Limit:      int32(response.Limit),
+		// Offset:     int32(response.Offset),
+		// HasMore:    response.HasMore,
+		// NextOffset: int32(response.NextOffset),
 	}, nil
 }

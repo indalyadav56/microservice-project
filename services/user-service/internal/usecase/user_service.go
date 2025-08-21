@@ -6,20 +6,18 @@ import (
 	"user-service/internal/domain"
 )
 
-// UserService implements the user business logic
-type UserService struct {
+type userService struct {
 	userRepo domain.UserRepository
 }
 
-// NewUserService creates a new instance of UserService
-func NewUserService(userRepo domain.UserRepository) *UserService {
-	return &UserService{
+func NewUserService(userRepo domain.UserRepository) *userService {
+	return &userService{
 		userRepo: userRepo,
 	}
 }
 
 // CreateUser creates a new user
-func (s *UserService) CreateUser(user *domain.User) error {
+func (s *userService) CreateUser(user *domain.User) error {
 	// Validate user data
 	if err := user.Validate(); err != nil {
 		return fmt.Errorf("validation failed: %w", err)
@@ -46,7 +44,7 @@ func (s *UserService) CreateUser(user *domain.User) error {
 }
 
 // GetUser retrieves a user by ID
-func (s *UserService) GetUser(id string) (*domain.User, error) {
+func (s *userService) GetUser(id string) (*domain.User, error) {
 	user, err := s.userRepo.GetByID(id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
@@ -56,7 +54,7 @@ func (s *UserService) GetUser(id string) (*domain.User, error) {
 }
 
 // UpdateUser updates an existing user
-func (s *UserService) UpdateUser(user *domain.User) error {
+func (s *userService) UpdateUser(user *domain.User) error {
 	// Check if user exists
 	existingUser, err := s.userRepo.GetByID(user.ID)
 	if err != nil {
@@ -92,7 +90,7 @@ func (s *UserService) UpdateUser(user *domain.User) error {
 }
 
 // DeleteUser deletes a user
-func (s *UserService) DeleteUser(id string) error {
+func (s *userService) DeleteUser(id string) error {
 	// Check if user exists
 	_, err := s.userRepo.GetByID(id)
 	if err != nil {
@@ -108,7 +106,7 @@ func (s *UserService) DeleteUser(id string) error {
 }
 
 // ListUsers retrieves a paginated list of users
-func (s *UserService) ListUsers(limit, offset int) ([]*domain.User, error) {
+func (s *userService) ListUsers(limit, offset int) ([]*domain.User, error) {
 	users, err := s.userRepo.List(limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list users: %w", err)
@@ -118,12 +116,12 @@ func (s *UserService) ListUsers(limit, offset int) ([]*domain.User, error) {
 }
 
 // ValidateUser validates user data
-func (s *UserService) ValidateUser(user *domain.User) error {
+func (s *userService) ValidateUser(user *domain.User) error {
 	return user.Validate()
 }
 
 // GetUserListResponse returns a paginated user list response
-func (s *UserService) GetUserListResponse(limit, offset int) (*domain.UserListResponse, error) {
+func (s *userService) GetUserListResponse(limit, offset int) (*domain.UserListResponse, error) {
 	users, err := s.ListUsers(limit, offset)
 	if err != nil {
 		return nil, err

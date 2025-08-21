@@ -5,20 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"user-service/internal/domain"
 )
 
 type Server struct {
-	server      *http.Server
-	httpAddr    string
-	authService domain.AuthService
+	server   *http.Server
+	httpAddr string
 }
 
-func NewServer(httpAddr string, authService domain.AuthService) *Server {
+func NewServer(httpAddr string) *Server {
 	return &Server{
-		httpAddr:    httpAddr,
-		authService: authService,
+		httpAddr: httpAddr,
 	}
 }
 
@@ -49,7 +45,7 @@ func (s *Server) healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Stop gracefully stops the HTTP server
-func (s *Server) Stop() error {
+func (s *Server) Stop(ctx context.Context) error {
 	if s.server != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()

@@ -31,24 +31,14 @@ type UserRepository interface {
 	Count() (int64, error)
 }
 
-// UserService defines the interface for user business operations
-type UserService interface {
-	CreateUser(user *User) error
-	GetUser(id string) (*User, error)
-	UpdateUser(user *User) error
-	DeleteUser(id string) error
-	ListUsers(limit, offset int) ([]*User, error)
-	ValidateUser(user *User) error
-}
-
 // Common errors
 var (
-	ErrUserNotFound     = errors.New("user not found")
+	ErrUserNotFound      = errors.New("user not found")
 	ErrUserAlreadyExists = errors.New("user already exists")
-	ErrInvalidUser      = errors.New("invalid user data")
-	ErrInvalidEmail     = errors.New("invalid email format")
-	ErrInvalidUsername  = errors.New("invalid username")
-	ErrWeakPassword     = errors.New("password is too weak")
+	ErrInvalidUser       = errors.New("invalid user data")
+	ErrInvalidEmail      = errors.New("invalid email format")
+	ErrInvalidUsername   = errors.New("invalid username")
+	ErrWeakPassword      = errors.New("password is too weak")
 )
 
 // Validate validates user data
