@@ -187,6 +187,14 @@ services:
       - microservice-network
     restart: unless-stopped
 
+  vault:
+    image: vault:latest
+    container_name: vault
+    ports:
+      - "8200:8200"
+    networks:
+      - microservice-network
+
 volumes:
   postgres_data:
   redis_data:

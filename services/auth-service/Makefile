@@ -1,16 +1,5 @@
 .PHONY: proto build run clean test docker-build docker-run
 
-# Generate protobuf, gRPC, and gRPC-gateway code
-lint-proto:
-	buf lint
-
-generate-proto:
-	buf generate
-
-# Generate swagger documentation
-generate-swagger:
-	buf generate --template buf.gen.yaml
-
 proto:
 	mkdir -p pb
 	protoc \

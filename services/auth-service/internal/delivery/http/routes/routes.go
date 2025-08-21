@@ -1,12 +1,12 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"auth-service/internal/delivery/http/handlers"
 
-func AuthRoutes(authGroup *gin.RouterGroup) {
-	authGroup.POST("/login", LoginHandler)
-	authGroup.POST("/register", RegisterHandler)
-	authGroup.GET("/logout", LogoutHandler)
-	authGroup.GET("/profile", ProfileHandler)
-	authGroup.PUT("/profile", UpdateProfileHandler)
-	authGroup.DELETE("/account", DeleteAccountHandler)
+	"github.com/gin-gonic/gin"
+)
+
+func AuthRoutes(authGroup *gin.RouterGroup, authHandler handlers.AuthHandler) {
+	authGroup.POST("/auth/v1/login", authHandler.Login)
+	authGroup.POST("/auth/v1/register", authHandler.Register)
 }

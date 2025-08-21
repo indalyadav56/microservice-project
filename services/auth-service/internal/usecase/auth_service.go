@@ -9,9 +9,6 @@ type authService struct {
 	jwtExpiry time.Duration
 }
 
-func NewAuthService(jwtSecret string, jwtExpiry time.Duration) *authService {
-	return &authService{
-		jwtSecret: jwtSecret,
-		jwtExpiry: jwtExpiry,
-	}
+func NewAuthService() *authService {
+	return &authService{}
 }
