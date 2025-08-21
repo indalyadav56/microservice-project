@@ -17,7 +17,10 @@ type Server struct {
 }
 
 func NewServer(port int) *Server {
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(ValidationInterceptor),
+		grpc.StreamInterceptor(ValidationStreamInterceptor),
+	)
 
 	return &Server{
 		grpcServer: grpcServer,

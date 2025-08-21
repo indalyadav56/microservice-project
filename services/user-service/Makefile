@@ -1,12 +1,5 @@
 .PHONY: proto build run clean test docker-build docker-run
 
-# Generate protobuf, gRPC, and gRPC-gateway code
-lint-proto:
-	go tool buf lint --config buf.yaml
-
-generate-proto:
-	buf generate --template buf.gen.yaml
-
 proto:
 	mkdir -p pb
 	protoc \
@@ -39,6 +32,8 @@ install-proto:
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+	go install github.com/envoyproxy/protoc-gen-validate@latest
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 
 # Docker build
 docker-build:

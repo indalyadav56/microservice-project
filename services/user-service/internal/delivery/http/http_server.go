@@ -20,9 +20,14 @@ func NewServer(httpAddr string) *Server {
 
 // Start starts the HTTP server
 func (s *Server) Start() error {
-	// Create HTTP server with basic health check
+	// Create HTTP server with basic health check and swagger
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", s.healthHandler)
+
+	// Add swagger routes
+	swaggerHandler := NewSwaggerHandler()
+	mux.HandleFunc("/swagger.json", swaggerHandler.ServeSwagger)
+	mux.HandleFunc("/swagger-ui/", swaggerHandler.ServeSwaggerUI)
 
 	// Create HTTP server
 	s.server = &http.Server{
