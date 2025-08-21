@@ -9,7 +9,7 @@ import (
 )
 
 type UserGRPCHandler struct {
-	pb.UnimplementedAuthServiceServer
+	pb.UnimplementedUserServiceServer
 	userService domain.UserService
 }
 
@@ -19,8 +19,8 @@ func NewUserGRPCHandler(userService domain.UserService) *UserGRPCHandler {
 	}
 }
 
-// Register handles user registration
-func (h *UserGRPCHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+// CreateUser handles user registration
+func (h *UserGRPCHandler) CreateUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	// Create user from request
 	user := &domain.User{
 		Username:  req.Username,

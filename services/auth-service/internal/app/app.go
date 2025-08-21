@@ -7,13 +7,18 @@ import (
 	"net/http"
 
 	"auth-service/internal/config"
+	"auth-service/internal/delivery/grpc"
+	"auth-service/internal/delivery/http/handlers"
+	"auth-service/internal/delivery/http/routes"
 	"auth-service/internal/usecase"
+	"auth-service/pb"
 	"auth-service/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
 
 type App struct {
+	ctx        context.Context
 	httpServer *gin.Engine
 }
 
@@ -28,8 +33,16 @@ func NewApp(ctx context.Context) (*App, error) {
 	// logging
 	logger.InitLogger(cfg.App.LogLevel)
 
+	// Initialize gRPC client
+	grpcClient, err := grpc.NewGrpcClient("localhost:50051")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create gRPC client")
+	}
+
+	userGrpcClient := pb.NewUserServiceClient(grpcClient)
+
 	// Initialize use cases
-	authService := usecase.NewAuthService()
+	authService := usecase.NewAuthService(userGrpcClient)
 	fmt.Println(authService)
 
 	// ---- delivery layer ----
@@ -38,6 +51,10 @@ func NewApp(ctx context.Context) (*App, error) {
 	httpServer.Use(gin.Recovery())
 	httpServer.Use(gin.Logger())
 	httpServer.Use(gin.ErrorLogger())
+
+	handler := handlers.NewAuthHandler(authService)
+
+	routes.AuthRoutes(httpServer, handler)
 
 	return &App{
 		httpServer: httpServer,
@@ -52,13 +69,13 @@ func (a *App) Run() error {
 	return nil
 }
 
-func (a *App) Stop(ctx context.Context) error {
+func (a *App) Stop() error {
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", 8080),
 		Handler: a.httpServer,
 	}
 
-	if err := server.Shutdown(ctx); err != nil {
+	if err := server.Shutdown(a.ctx); err != nil {
 		return fmt.Errorf("server forced to shutdown: %v", err)
 	}
 	return nil

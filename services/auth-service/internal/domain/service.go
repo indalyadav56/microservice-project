@@ -1,6 +1,8 @@
 package domain
 
+import "context"
+
 type AuthService interface {
-	Login(email, password string) (string, error)
-	Register(email, username, password string) error
+	Login(ctx context.Context, email, password string) (string, error)
+	Register(ctx context.Context, email, username, password string) error
 }

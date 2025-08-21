@@ -19,5 +19,5 @@ func main() {
 		log.Fatalf("app run error: %v", err)
 	}
 
-	defer app.Stop(ctx)
+	defer app.Stop()
 }

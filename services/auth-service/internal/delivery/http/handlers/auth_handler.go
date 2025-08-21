@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"auth-service/internal/delivery/http/dto"
 	"auth-service/internal/domain"
 
 	"github.com/gin-gonic/gin"
@@ -23,16 +24,13 @@ func NewAuthHandler(authService domain.AuthService) *authHandler {
 
 // Login handles user login.
 func (h *authHandler) Login(c *gin.Context) {
-	var req struct {
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required"`
-	}
+	var req dto.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	token, err := h.authService.Login(req.Email, req.Password)
+	token, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
 		return
@@ -53,7 +51,7 @@ func (h *authHandler) Register(c *gin.Context) {
 		return
 	}
 
-	err := h.authService.Register(req.Email, req.Username, req.Password)
+	err := h.authService.Register(c.Request.Context(), req.Email, req.Username, req.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

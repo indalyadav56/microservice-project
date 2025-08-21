@@ -30,7 +30,7 @@ func NewServer(port int) *Server {
 
 // RegisterHandler registers the gRPC handler with the server
 func (s *Server) RegisterHandler(handler *UserGRPCHandler) {
-	pb.RegisterAuthServiceServer(s.grpcServer, handler)
+	pb.RegisterUserServiceServer(s.grpcServer, handler)
 
 	// Enable reflection for debugging
 	reflection.Register(s.grpcServer)
