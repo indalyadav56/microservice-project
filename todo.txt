@@ -1,0 +1,1 @@
+create kubernetes operator to overcom unneccesary kubernetes config.
