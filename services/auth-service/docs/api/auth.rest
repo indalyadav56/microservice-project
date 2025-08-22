@@ -7,10 +7,14 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/auth/v1/register
+POST http://localhost:8081/v1/auth/register
 Content-Type: application/json
 
 {
-  "username": "your_username",
-  "password": "your_password"
+  "email": "indal@gmail.com",
+  "first_name": "Indal",
+  "middle_name": "Kumar",
+  "last_name": "Yadav",
+  "password": "Indal@123",
+  "role": "user"
 }

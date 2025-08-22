@@ -7,6 +7,7 @@ import (
 
 	"user-service/internal/config"
 	"user-service/internal/delivery/grpc"
+	"user-service/internal/delivery/grpc/middlewares"
 	"user-service/internal/delivery/http"
 	"user-service/internal/domain"
 	"user-service/internal/repository"
@@ -62,7 +63,11 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	// ---- delivery layer ----
 	httpServer := http.NewServer(fmt.Sprintf(":%d", 8080))
-	grpcServer := grpc.NewServer(50051)
+	grpcServer, err := grpc.NewServer(50051, middlewares.GrpcLoggingMiddleware())
+	if err != nil {
+		log.Fatalf("Failed to create gRPC server: %v", err)
+		return nil, err
+	}
 
 	grpcServer.RegisterHandler(grpc.NewUserGRPCHandler(userService))
 

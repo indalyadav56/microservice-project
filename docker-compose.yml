@@ -17,6 +17,17 @@ services:
     networks:
       - microservice-network
     restart: unless-stopped
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - rbac_mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: indal
+      MONGO_INITDB_ROOT_PASSWORD: indal
 
   # PostgreSQL Database
   postgres:
@@ -195,6 +206,7 @@ services:
 
 volumes:
   postgres_data:
+  rbac_mongodb_data:
   redis_data:
   prometheus_data:
   grafana_data:

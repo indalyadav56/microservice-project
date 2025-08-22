@@ -38,6 +38,7 @@ func NewApp(ctx context.Context) (*App, error) {
 	grpcConn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
+		return nil, fmt.Errorf("failed to connect to gRPC server: %w", err)
 	}
 
 	userGrpcClient := pb.NewUserServiceClient(grpcConn)

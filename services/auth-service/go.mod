@@ -3,11 +3,10 @@ module auth-service
 go 1.24.5
 
 require (
-	github.com/envoyproxy/protoc-gen-validate v1.1.0
 	github.com/gin-gonic/gin v1.10.1
+	github.com/golang/protobuf v1.5.0
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.20.1
-	google.golang.org/genproto/googleapis/api v0.0.0-20241209162323-e6fa225c2576
 	google.golang.org/grpc v1.67.3
 	google.golang.org/protobuf v1.36.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
