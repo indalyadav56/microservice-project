@@ -7,28 +7,17 @@ import (
 
 // User represents a user in the system
 type User struct {
-	ID        string    `json:"id" bson:"_id,omitempty" db:"id"`
-	Username  string    `json:"username" bson:"username" db:"username"`
-	Email     string    `json:"email" bson:"email" db:"email"`
-	Password  string    `json:"-" bson:"password" db:"password"`
-	FirstName string    `json:"first_name" bson:"first_name" db:"first_name"`
-	LastName  string    `json:"last_name" bson:"last_name" db:"last_name"`
-	IsActive  bool      `json:"is_active" bson:"is_active" db:"is_active"`
-	Role      string    `json:"role" bson:"role" db:"role"`
-	CreatedAt time.Time `json:"created_at" bson:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" bson:"updated_at" db:"updated_at"`
-}
-
-// UserRepository defines the interface for user data operations
-type UserRepository interface {
-	Create(user *User) error
-	GetByID(id string) (*User, error)
-	GetByUsername(username string) (*User, error)
-	GetByEmail(email string) (*User, error)
-	Update(user *User) error
-	Delete(id string) error
-	List(limit, offset int) ([]*User, error)
-	Count() (int64, error)
+	ID         string     `json:"id"`
+	Email      string     `json:"email"`
+	Password   string     `json:"-"`
+	FirstName  string     `json:"first_name"`
+	MiddleName string     `json:"middle_name"`
+	LastName   string     `json:"last_name"`
+	IsActive   bool       `json:"is_active"`
+	Role       string     `json:"role"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 // Common errors
@@ -43,9 +32,6 @@ var (
 
 // Validate validates user data
 func (u *User) Validate() error {
-	if u.Username == "" {
-		return ErrInvalidUsername
-	}
 	if u.Email == "" {
 		return ErrInvalidEmail
 	}
@@ -66,7 +52,7 @@ func (u *User) FullName() string {
 	if u.LastName != "" {
 		return u.LastName
 	}
-	return u.Username
+	return u.Email
 }
 
 // IsAdmin checks if user has admin role

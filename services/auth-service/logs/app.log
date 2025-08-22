@@ -1,2 +1,14 @@
 {"time":"2025-08-21T19:15:35.477975+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
 {"time":"2025-08-21T19:16:16.086387+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:19:19.067894+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:22:00.976426+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:22:55.319699+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:23:19.167839+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:23:21.49119+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-22T12:24:03.118242+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8080: bind: address already in use"}
+{"time":"2025-08-22T12:24:23.348645+05:30","level":"INFO","msg":"failed to connect: grpc: no transport security set (use grpc.WithTransportCredentials(insecure.NewCredentials()) explicitly or set credentials)"}
+{"time":"2025-08-22T12:24:37.514236+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8080: bind: address already in use"}
+{"time":"2025-08-22T12:25:42.587401+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8080: bind: address already in use"}
+{"time":"2025-08-22T12:26:01.249123+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8080: bind: address already in use"}
+{"time":"2025-08-22T12:26:43.875628+05:30","level":"INFO","msg":"failed to connect: grpc: no transport security set (use grpc.WithTransportCredentials(insecure.NewCredentials()) explicitly or set credentials)"}
+{"time":"2025-08-22T12:27:03.862526+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8080: bind: address already in use"}

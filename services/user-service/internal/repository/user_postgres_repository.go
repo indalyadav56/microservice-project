@@ -7,12 +7,10 @@ import (
 	"user-service/internal/domain"
 )
 
-// PostgresUserRepository implements UserRepository with PostgreSQL
 type PostgresUserRepository struct {
 	db *sql.DB
 }
 
-// NewPostgresUserRepository creates a new PostgreSQL user repository
 func NewPostgresUserRepository(db *sql.DB) *PostgresUserRepository {
 	return &PostgresUserRepository{db: db}
 }
@@ -20,23 +18,21 @@ func NewPostgresUserRepository(db *sql.DB) *PostgresUserRepository {
 // Create adds a new user to the repository
 func (r *PostgresUserRepository) Create(user *domain.User) error {
 	query := `
-		INSERT INTO users (username, email, password, first_name, last_name, is_active, role, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		INSERT INTO users (email, password_hash, first_name, middle_name, last_name, is_active, role)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id`
 
 	user.BeforeCreate()
-	
+
 	err := r.db.QueryRow(
 		query,
-		user.Username,
 		user.Email,
 		user.Password,
 		user.FirstName,
+		user.MiddleName,
 		user.LastName,
 		user.IsActive,
 		user.Role,
-		user.CreatedAt,
-		user.UpdatedAt,
 	).Scan(&user.ID)
 
 	if err != nil {
@@ -49,16 +45,16 @@ func (r *PostgresUserRepository) Create(user *domain.User) error {
 // GetByID retrieves a user by ID
 func (r *PostgresUserRepository) GetByID(id string) (*domain.User, error) {
 	query := `
-		SELECT id, username, email, password, first_name, last_name, is_active, role, created_at, updated_at
+		SELECT id, email, password_hash, first_name, middle_name, last_name, is_active, role, created_at, updated_at
 		FROM users WHERE id = $1`
 
 	user := &domain.User{}
 	err := r.db.QueryRow(query, id).Scan(
 		&user.ID,
-		&user.Username,
 		&user.Email,
 		&user.Password,
 		&user.FirstName,
+		&user.MiddleName,
 		&user.LastName,
 		&user.IsActive,
 		&user.Role,
@@ -76,49 +72,19 @@ func (r *PostgresUserRepository) GetByID(id string) (*domain.User, error) {
 	return user, nil
 }
 
-// GetByUsername retrieves a user by username
-func (r *PostgresUserRepository) GetByUsername(username string) (*domain.User, error) {
-	query := `
-		SELECT id, username, email, password, first_name, last_name, is_active, role, created_at, updated_at
-		FROM users WHERE username = $1`
-
-	user := &domain.User{}
-	err := r.db.QueryRow(query, username).Scan(
-		&user.ID,
-		&user.Username,
-		&user.Email,
-		&user.Password,
-		&user.FirstName,
-		&user.LastName,
-		&user.IsActive,
-		&user.Role,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, domain.ErrUserNotFound
-		}
-		return nil, fmt.Errorf("failed to get user by username: %w", err)
-	}
-
-	return user, nil
-}
-
 // GetByEmail retrieves a user by email
 func (r *PostgresUserRepository) GetByEmail(email string) (*domain.User, error) {
 	query := `
-		SELECT id, username, email, password, first_name, last_name, is_active, role, created_at, updated_at
-		FROM users WHERE email = $1`
+		SELECT id, email, password_hash, first_name, middle_name, last_name, is_active, role, created_at, updated_at
+		FROM users WHERE email = $1 AND deleted_at IS NULL`
 
 	user := &domain.User{}
 	err := r.db.QueryRow(query, email).Scan(
 		&user.ID,
-		&user.Username,
 		&user.Email,
 		&user.Password,
 		&user.FirstName,
+		&user.MiddleName,
 		&user.LastName,
 		&user.IsActive,
 		&user.Role,
@@ -139,7 +105,7 @@ func (r *PostgresUserRepository) GetByEmail(email string) (*domain.User, error) 
 // Update updates an existing user
 func (r *PostgresUserRepository) Update(user *domain.User) error {
 	user.BeforeUpdate()
-	
+
 	query := `
 		UPDATE users 
 		SET username = $1, email = $2, password = $3, first_name = $4, last_name = $5, 
@@ -148,7 +114,6 @@ func (r *PostgresUserRepository) Update(user *domain.User) error {
 
 	result, err := r.db.Exec(
 		query,
-		user.Username,
 		user.Email,
 		user.Password,
 		user.FirstName,
@@ -215,7 +180,6 @@ func (r *PostgresUserRepository) List(limit, offset int) ([]*domain.User, error)
 		user := &domain.User{}
 		err := rows.Scan(
 			&user.ID,
-			&user.Username,
 			&user.Email,
 			&user.Password,
 			&user.FirstName,

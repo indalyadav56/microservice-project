@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	App  AppConfig  `mapstructure:"app"`
-	HTTP HTTPConfig `mapstructure:"http"`
-	GRPC GRPCConfig `mapstructure:"grpc"`
-	DB   DBConfig   `mapstructure:"database"`
+	App   AppConfig  `mapstructure:"app"`
+	HTTP  HTTPConfig `mapstructure:"http"`
+	GRPC  GRPCConfig `mapstructure:"grpc"`
+	DB    DBConfig   `mapstructure:"database"`
+	Admin AdminUser  `mapstructure:"admin"`
 }
 
 type AppConfig struct {
@@ -35,6 +36,11 @@ type DBConfig struct {
 	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
 	SSLMode  string `mapstructure:"ssl_mode"`
+}
+
+type AdminUser struct {
+	Email    string `mapstructure:"email"`
+	Password string `mapstructure:"password"`
 }
 
 func Load() (*Config, error) {

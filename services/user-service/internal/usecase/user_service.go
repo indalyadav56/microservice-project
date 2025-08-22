@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"user-service/internal/domain"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -23,17 +25,19 @@ func (s *userService) CreateUser(user *domain.User) error {
 		return fmt.Errorf("validation failed: %w", err)
 	}
 
-	// Check if username already exists
-	existingUser, _ := s.userRepo.GetByUsername(user.Username)
+	// Check if email already exists
+	existingUser, _ := s.userRepo.GetByEmail(user.Email)
 	if existingUser != nil {
 		return domain.ErrUserAlreadyExists
 	}
 
-	// Check if email already exists
-	existingUser, _ = s.userRepo.GetByEmail(user.Email)
-	if existingUser != nil {
-		return domain.ErrUserAlreadyExists
+	// Hash password
+	hashedPassword, err := s.hashPassword(user.Password)
+	if err != nil {
+		return fmt.Errorf("failed to hash password: %w", err)
 	}
+
+	user.Password = hashedPassword
 
 	// Create user
 	if err := s.userRepo.Create(user); err != nil {
@@ -41,6 +45,14 @@ func (s *userService) CreateUser(user *domain.User) error {
 	}
 
 	return nil
+}
+
+func (s *userService) hashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
 }
 
 // GetUser retrieves a user by ID
@@ -61,10 +73,6 @@ func (s *userService) UpdateUser(user *domain.User) error {
 		return fmt.Errorf("user not found: %w", err)
 	}
 
-	// Update fields
-	if user.Username != "" {
-		existingUser.Username = user.Username
-	}
 	if user.Email != "" {
 		existingUser.Email = user.Email
 	}
@@ -146,4 +154,18 @@ func (s *userService) GetUserListResponse(limit, offset int) (*domain.UserListRe
 		HasMore:    hasMore,
 		NextOffset: nextOffset,
 	}, nil
+}
+
+// CreateAdminUser creates an admin user
+func (s *userService) CreateAdminUser() error {
+	adminUser := &domain.User{
+		Email:     "admin@example.com",
+		Password:  "admin",
+		Role:      "admin",
+		FirstName: "System",
+		LastName:  "Administrator",
+		IsActive:  true,
+	}
+
+	return s.CreateUser(adminUser)
 }

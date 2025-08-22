@@ -8,6 +8,7 @@ import (
 	"user-service/internal/config"
 	"user-service/internal/delivery/grpc"
 	"user-service/internal/delivery/http"
+	"user-service/internal/domain"
 	"user-service/internal/repository"
 	"user-service/internal/usecase"
 	"user-service/pkg/db"
@@ -48,6 +49,16 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	// Initialize use cases
 	userService := usecase.NewUserService(userRepo)
+
+	// create admin user
+	if err := userService.CreateAdminUser(); err != nil {
+		if err == domain.ErrUserAlreadyExists {
+			log.Println("Admin user already exists, skipping creation")
+		} else {
+			log.Fatalf("Failed to create admin user: %v", err)
+			return nil, err
+		}
+	}
 
 	// ---- delivery layer ----
 	httpServer := http.NewServer(fmt.Sprintf(":%d", 8080))

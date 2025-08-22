@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 
 	"auth-service/internal/config"
-	"auth-service/internal/delivery/grpc"
 	"auth-service/internal/delivery/http/handlers"
 	"auth-service/internal/delivery/http/routes"
 	"auth-service/internal/usecase"
@@ -15,11 +13,14 @@ import (
 	"auth-service/pkg/logger"
 
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type App struct {
 	ctx        context.Context
 	httpServer *gin.Engine
+	grpcConn   *grpc.ClientConn
 }
 
 func NewApp(ctx context.Context) (*App, error) {
@@ -34,12 +35,12 @@ func NewApp(ctx context.Context) (*App, error) {
 	logger.InitLogger(cfg.App.LogLevel)
 
 	// Initialize gRPC client
-	grpcClient, err := grpc.NewGrpcClient("localhost:50051")
+	grpcConn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create gRPC client")
+		log.Fatalf("failed to connect: %v", err)
 	}
 
-	userGrpcClient := pb.NewUserServiceClient(grpcClient)
+	userGrpcClient := pb.NewUserServiceClient(grpcConn)
 
 	// Initialize use cases
 	authService := usecase.NewAuthService(userGrpcClient)
@@ -56,13 +57,20 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	routes.AuthRoutes(httpServer, handler)
 
+	// server := &http.Server{
+	// 	Addr:    fmt.Sprintf(":%d", 8081),
+	// 	Handler: a.httpServer,
+	// }
+
 	return &App{
 		httpServer: httpServer,
+		grpcConn:   grpcConn,
+		ctx:        ctx,
 	}, nil
 }
 
 func (a *App) Run() error {
-	if err := a.httpServer.Run(); err != nil {
+	if err := a.httpServer.Run(":8081"); err != nil {
 		return fmt.Errorf("http server stopped: %v", err)
 	}
 
@@ -70,13 +78,9 @@ func (a *App) Run() error {
 }
 
 func (a *App) Stop() error {
-	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", 8080),
-		Handler: a.httpServer,
-	}
-
-	if err := server.Shutdown(a.ctx); err != nil {
-		return fmt.Errorf("server forced to shutdown: %v", err)
-	}
+	// if err := server.Shutdown(a.ctx); err != nil {
+	// 	return fmt.Errorf("server forced to shutdown: %v", err)
+	// }
+	defer a.grpcConn.Close()
 	return nil
 }

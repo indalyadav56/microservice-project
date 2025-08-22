@@ -6,6 +6,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/spf13/viper v1.20.1
+	golang.org/x/crypto v0.39.0
 	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.8
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

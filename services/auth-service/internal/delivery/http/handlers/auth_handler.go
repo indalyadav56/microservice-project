@@ -41,17 +41,13 @@ func (h *authHandler) Login(c *gin.Context) {
 
 // Register handles user registration.
 func (h *authHandler) Register(c *gin.Context) {
-	var req struct {
-		Email    string `json:"email" binding:"required,email"`
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required,min=6"`
-	}
+	var req dto.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := h.authService.Register(c.Request.Context(), req.Email, req.Username, req.Password)
+	err := h.authService.Register(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

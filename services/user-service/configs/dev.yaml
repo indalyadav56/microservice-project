@@ -17,3 +17,7 @@ database:
   username: "postgres"
   password: "postgres"
   ssl_mode: "disable"
+
+admin:
+  email: "admin@example.com"
+  password: "admin"

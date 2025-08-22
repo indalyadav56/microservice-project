@@ -19,14 +19,14 @@ func NewAuthService(client pb.UserServiceClient) *authService {
 	}
 }
 
-func (s *authService) Register(ctx context.Context, email, username, password string) error {
+func (s *authService) Register(ctx context.Context, email, password string) error {
 	res, err := s.userGrpcClient.CreateUser(ctx, &pb.CreateUserRequest{
 		Email:    email,
-		Username: username,
 		Password: password,
 	})
 	if err != nil {
 		fmt.Println("Error creating user:", err)
+		return err
 	}
 
 	fmt.Println("User created successfully:", res)

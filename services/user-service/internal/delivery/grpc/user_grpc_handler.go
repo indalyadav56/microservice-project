@@ -23,7 +23,6 @@ func NewUserGRPCHandler(userService domain.UserService) *UserGRPCHandler {
 func (h *UserGRPCHandler) CreateUser(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	// Create user from request
 	user := &domain.User{
-		Username:  req.Username,
 		Email:     req.Email,
 		Password:  req.Password,
 		FirstName: req.FirstName,
@@ -60,7 +59,6 @@ func (h *UserGRPCHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 		Message: "User retrieved successfully",
 		User: &pb.User{
 			Id:        user.ID,
-			Username:  user.Username,
 			Email:     user.Email,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
@@ -74,7 +72,6 @@ func (h *UserGRPCHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 func (h *UserGRPCHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	user := &domain.User{
 		ID:        req.Id,
-		Username:  req.Username,
 		Email:     req.Email,
 		FirstName: req.FirstName,
 		LastName:  req.LastName,

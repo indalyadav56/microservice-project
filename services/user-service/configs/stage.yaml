@@ -1,0 +1,23 @@
+app:
+  name: user-service
+  log_level: debug
+
+http:
+  host: "0.0.0.0"
+  port: 8080
+
+grpc:
+  host: "0.0.0.0"
+  port: 9090
+
+database:
+  name: "users"
+  host: "postgres"
+  port: 5432
+  username: "postgres"
+  password: "postgres"
+  ssl_mode: "prefer"
+
+admin:
+  email: "admin@example.com"
+  password: "admin"
