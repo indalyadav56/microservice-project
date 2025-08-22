@@ -31,14 +31,20 @@ func NewApp(ctx context.Context) (*App, error) {
 	logger.InitLogger(cfg.App.LogLevel)
 
 	// database
-	db, err := db.InitDB("postgres", config.GetDatabaseDSN(cfg))
+	dbConn, err := db.InitDB("postgres", config.GetDatabaseDSN(cfg))
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 		return nil, err
 	}
 
+	// migrations
+	if err := db.ApplyMigrations(dbConn, "postgres", "./migrations"); err != nil {
+		log.Fatalf("Failed to apply migrations: %v", err)
+		return nil, err
+	}
+
 	// Initialize repository
-	userRepo := repository.NewPostgresUserRepository(db)
+	userRepo := repository.NewPostgresUserRepository(dbConn)
 
 	// Initialize use cases
 	userService := usecase.NewUserService(userRepo)
