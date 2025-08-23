@@ -159,3 +159,27 @@ func (h *UserGRPCHandler) ListUsers(ctx context.Context, req *pb.ListUsersReques
 		// NextOffset: int32(response.NextOffset),
 	}, nil
 }
+
+// GetUserByEmail handles getting a user by email
+func (h *UserGRPCHandler) GetUserByEmail(ctx context.Context, req *pb.GetUserByEmailRequest) (*pb.ApiResponse, error) {
+	user, err := h.userService.GetUserByEmail(req.Email)
+	if err != nil {
+		return &pb.ApiResponse{
+			Success: false,
+			Message: fmt.Sprintf("Failed to get user: %v", err),
+		}, nil
+	}
+
+	return &pb.ApiResponse{
+		Success: true,
+		Message: "User retrieved successfully",
+		User: &pb.User{
+			Id:        user.ID,
+			Email:     user.Email,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			IsActive:  user.IsActive,
+			Role:      user.Role,
+		},
+	}, nil
+}

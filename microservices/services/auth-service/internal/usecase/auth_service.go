@@ -20,7 +20,7 @@ func NewAuthService(client pb.UserServiceClient) *authService {
 }
 
 func (s *authService) Register(ctx context.Context, email, password string) error {
-	res, err := s.userGrpcClient.CreateUser(ctx, &pb.CreateUserRequest{
+	res, err := s.userGrpcClient.CreateUser(ctx, &pb.RegisterRequest{
 		Email:    email,
 		Password: password,
 	})
@@ -35,5 +35,13 @@ func (s *authService) Register(ctx context.Context, email, password string) erro
 }
 
 func (s *authService) Login(ctx context.Context, email, password string) (string, error) {
-	return "", nil
+	res, err := s.userGrpcClient.GetUserByEmail(ctx, &pb.GetUserByEmailRequest{
+		Email: email,
+	})
+	if err != nil {
+		fmt.Println("Error getting user by email:", err)
+		return "", err
+	}
+
+	return res.User.Id, nil
 }

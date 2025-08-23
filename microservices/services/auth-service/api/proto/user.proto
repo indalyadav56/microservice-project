@@ -6,9 +6,9 @@ option go_package = "./pb";
 
 message User {
   string id = 1;
-  string username = 2;
-  string email = 3;
-  string first_name = 4;
+  string email = 2;
+  string first_name = 3;
+  string middle_name = 4;
   string last_name = 5;
   bool is_active = 6;
   string role = 7;
@@ -16,7 +16,7 @@ message User {
   string updated_at = 9;
 }
 
-message CreateUserRequest {
+message RegisterRequest {
   string username = 1;
   string email = 2;
   string password = 3;
@@ -90,9 +90,20 @@ message ListUsersResponse {
 }
 
 service UserService {
-  rpc CreateUser(CreateUserRequest) returns (RegisterResponse);
+  rpc CreateUser(RegisterRequest) returns (RegisterResponse);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (ApiResponse);
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message ApiResponse {
+  bool success = 1;
+  string message = 2;
+  User user = 3;
 }

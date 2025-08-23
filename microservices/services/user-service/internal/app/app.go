@@ -7,18 +7,20 @@ import (
 
 	"user-service/internal/config"
 	"user-service/internal/delivery/grpc"
-	"user-service/internal/delivery/grpc/middlewares"
+	grpcmiddlewares "user-service/internal/delivery/grpc/middlewares"
+	grpcserver "user-service/internal/delivery/grpc/server"
 	"user-service/internal/delivery/http"
 	"user-service/internal/domain"
 	"user-service/internal/repository"
 	"user-service/internal/usecase"
+	"user-service/pb"
 	"user-service/pkg/db"
 	"user-service/pkg/logger"
 )
 
 type App struct {
 	httpServer *http.Server
-	grpcServer *grpc.Server
+	grpcServer *grpcserver.Server
 }
 
 func NewApp(ctx context.Context) (*App, error) {
@@ -62,14 +64,18 @@ func NewApp(ctx context.Context) (*App, error) {
 	}
 
 	// ---- delivery layer ----
-	httpServer := http.NewServer(fmt.Sprintf(":%d", 8080))
-	grpcServer, err := grpc.NewServer(50051, middlewares.GrpcLoggingMiddleware())
+	httpServer := http.NewServer(fmt.Sprintf(":%d", cfg.HTTP.Port))
+
+	// gRPC server
+	log.Printf("Starting gRPC server on port %d", cfg.GRPC.Port)
+	grpcServer, err := grpcserver.NewServer(cfg.GRPC.Port, grpcmiddlewares.GrpcLoggingMiddleware())
 	if err != nil {
-		log.Fatalf("Failed to create gRPC server: %v", err)
+		log.Fatalf("Failed: %v", err)
 		return nil, err
 	}
 
-	grpcServer.RegisterHandler(grpc.NewUserGRPCHandler(userService))
+	// register gRPC services
+	pb.RegisterUserServiceServer(grpcServer.GrpcServer, grpc.NewUserGRPCHandler(userService))
 
 	return &App{
 		httpServer: httpServer,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 
 	"auth-service/internal/config"
 	"auth-service/internal/delivery/http/handlers"
@@ -49,6 +50,13 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	// ---- delivery layer ----
 	httpServer := gin.Default()
+
+	// Health check endpoint
+	httpServer.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
+	})
 
 	httpServer.Use(gin.Recovery())
 	httpServer.Use(gin.Logger())

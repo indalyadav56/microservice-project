@@ -30,13 +30,13 @@ func (h *authHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
+	user, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 // Register handles user registration.

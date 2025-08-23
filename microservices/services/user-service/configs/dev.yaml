@@ -8,7 +8,7 @@ http:
 
 grpc:
   host: "0.0.0.0"
-  port: 9090
+  port: 50051
 
 database:
   name: "users"

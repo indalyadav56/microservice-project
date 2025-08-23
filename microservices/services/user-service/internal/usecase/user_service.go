@@ -156,6 +156,15 @@ func (s *userService) GetUserListResponse(limit, offset int) (*domain.UserListRe
 	}, nil
 }
 
+// GetUserByEmail retrieves a user by email
+func (s *userService) GetUserByEmail(email string) (*domain.User, error) {
+	user, err := s.userRepo.GetByEmail(email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	return user, nil
+}
+
 // CreateAdminUser creates an admin user
 func (s *userService) CreateAdminUser() error {
 	adminUser := &domain.User{
