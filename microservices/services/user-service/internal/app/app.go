@@ -31,6 +31,16 @@ func NewApp(ctx context.Context) (*App, error) {
 		return nil, err
 	}
 
+	fmt.Println()
+	fmt.Println("========= Config ========= ")
+	fmt.Println()
+
+	fmt.Println(cfg)
+
+	fmt.Println()
+	fmt.Println("========= Config ========= ")
+	fmt.Println()
+
 	// logging
 	logger.InitLogger(cfg.App.LogLevel)
 

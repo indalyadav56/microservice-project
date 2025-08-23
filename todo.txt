@@ -3,6 +3,15 @@ create kubernetes operator to overcom unneccesary kubernetes config.
 multi-region user feature add
 
 
+
+features:
+ auth(login, register) done
+
+TODO:
+    get users for admin role only
+    grpc to rest convert to user-service
+    
+
 -- Create a user for each service (optional - for better security)
 -- CREATE USER user_service WITH PASSWORD 'user_service_password';
 -- CREATE USER auth_service WITH PASSWORD 'auth_service_password';

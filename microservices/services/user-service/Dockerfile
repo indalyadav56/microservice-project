@@ -2,7 +2,7 @@
 FROM golang:1.24.5-alpine AS builder
 
 # Install necessary packages
-RUN apk add --no-cache git protobuf-dev
+RUN apk add --no-cache git protobuf-dev make
 
 # Set working directory
 WORKDIR /app
@@ -22,13 +22,10 @@ RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 
 # Generate protobuf code
-RUN protoc --go_out=. --go_opt=paths=source_relative \
-    --go-grpc_out=./pb --go-grpc_opt=paths=source_relative \
-    --grpc-gateway_out=./pb --grpc-gateway_opt=paths=source_relative \
-    ./proto/auth.proto
+RUN make proto
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/server ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o bin/server ./cmd/server.go
 
 # Final stage
 FROM alpine:latest
@@ -45,6 +42,8 @@ WORKDIR /app
 
 # Copy binary from builder stage
 COPY --from=builder /app/bin/server .
+COPY configs /app/configs
+COPY migrations /app/migrations
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
@@ -57,7 +56,7 @@ EXPOSE 50051 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1
 
 # Run the application
 CMD ["./server"]
