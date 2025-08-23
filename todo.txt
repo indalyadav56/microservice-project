@@ -1,5 +1,6 @@
 create kubernetes operator to overcom unneccesary kubernetes config.
 
+multi-region user feature add
 
 
 -- Create a user for each service (optional - for better security)

@@ -1,0 +1,11 @@
+app:
+  name: auth-service
+  log_level: debug
+
+http:
+  host: "0.0.0.0"
+  port: 8081
+
+grpc:
+  host: "0.0.0.0"
+  port: 9091
