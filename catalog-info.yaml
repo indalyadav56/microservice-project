@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sc-fulfillments
+  description: Service for handling fulfillments in the call center system
+  annotations:
+    ftdr.com/slack-support-channel: '#callcenter-support'
+    ftdr.com/dev-manager: Rajeena Choran
+    ftdr.com/tpm: Christie Boyd
+    ftdr.com/pelt-owner: Premal Jhaveri
+    ftdr.com/effort-name: callcenter
+    ftdr.com/repo: https://gitlab.com/ftdr/salescentral/fulfillments
+  tags:
+    - go
+    - ftdr
+spec:
+  type: service
+  lifecycle: experimental
+  owner: user:rajeena.choran
+  system: callcenter
