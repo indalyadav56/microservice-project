@@ -1,0 +1,38 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: RBAC-Service
+spec:
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: user-service
+spec:
+  type: backend
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  providesApis: [user-grpc-api]
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: user-grpc-api
+spec:
+  type: grpc
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  definition: |
+    syntax = "proto3";
+
+    service Exampler {
+      rpc Example (ExampleMessage) returns (ExampleMessage) {};
+    }
+
+    message ExampleMessage {
+      string example = 1;
+    };

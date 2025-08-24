@@ -8,3 +8,10 @@ To start the app, run:
 yarn install
 yarn start
 ```
+
+<!-- steps for developement environment -->
+
+update in backend Dockerfile NODE_END=development 
+comment down app-cconfig.production `database` key
+
+build and run
