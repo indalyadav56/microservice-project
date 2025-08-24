@@ -1,20 +1,17 @@
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: API
 metadata:
-  name: sc-fulfillments
-  description: Service for handling fulfillments in the call center system
-  annotations:
-    ftdr.com/slack-support-channel: '#callcenter-support'
-    ftdr.com/dev-manager: Rajeena Choran
-    ftdr.com/tpm: Christie Boyd
-    ftdr.com/pelt-owner: Premal Jhaveri
-    ftdr.com/effort-name: callcenter
-    ftdr.com/repo: https://gitlab.com/ftdr/salescentral/fulfillments
+  name: sc-fulfillments-api
+  description: OpenAPI spec for the SC Fulfillments CRUD service
   tags:
-    - go
-    - ftdr
+    - openapi
+    - rest
+    - fulfillments
+  annotations:
+    backstage.io/techdocs-ref: dir:.
 spec:
-  type: service
+  type: openapi
   lifecycle: experimental
   owner: user:rajeena.choran
-  system: callcenter
+  definition:
+    $text: https://github.com/indalyadav56/meetspace_backend/blob/main/docs/swagger.json
