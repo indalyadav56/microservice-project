@@ -32,7 +32,7 @@ func (h *authHandler) Login(c *gin.Context) {
 
 	user, err := h.authService.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "invalid credentials", "data": nil})
 		return
 	}
 

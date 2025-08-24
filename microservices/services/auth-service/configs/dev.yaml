@@ -9,3 +9,25 @@ http:
 grpc:
   host: "0.0.0.0"
   port: 9091
+
+cors:
+  allowed_origins:
+    - "http://localhost:3000"
+
+clients:
+  user_service:
+    target: "localhost"
+    tls:
+      enabled: false
+    timeouts:
+      dial: 5s       # connection establishment
+      rpc: 2s        # per-RPC deadline default
+    retry:
+      max_attempts: 3
+      backoff_initial: 200ms
+      backoff_max: 2s
+      retryable_status_codes: [UNAVAILABLE, RESOURCE_EXHAUSTED]
+    keepalive:
+      time: 30s
+      timeout: 5s
+      permit_without_stream: true

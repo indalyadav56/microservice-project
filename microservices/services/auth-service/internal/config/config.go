@@ -2,15 +2,17 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	App  AppConfig  `mapstructure:"app"`
-	HTTP HTTPConfig `mapstructure:"http"`
-	GRPC GRPCConfig `mapstructure:"grpc"`
-	DB   DBConfig   `mapstructure:"database"`
+	App     AppConfig     `mapstructure:"app"`
+	HTTP    HTTPConfig    `mapstructure:"http"`
+	GRPC    GRPCConfig    `mapstructure:"grpc"`
+	DB      DBConfig      `mapstructure:"database"`
+	Clients ClientsConfig `mapstructure:"clients"`
 }
 
 type AppConfig struct {
@@ -37,6 +39,14 @@ type DBConfig struct {
 	SSLMode  string `mapstructure:"ssl_mode"`
 }
 
+type ClientsConfig struct {
+	UserService UserServiceConfig `mapstructure:"user_service"`
+}
+
+type UserServiceConfig struct {
+	Target string `mapstructure:"target"`
+}
+
 func Load() (*Config, error) {
 	viper.SetConfigName("dev")
 	viper.SetConfigType("yaml")
@@ -45,6 +55,8 @@ func Load() (*Config, error) {
 
 	// allow overriding via env vars like APP_NAME, HTTP_PORT
 	viper.AutomaticEnv()
+
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("failed to read config: %v", err)

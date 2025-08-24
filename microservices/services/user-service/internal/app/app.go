@@ -16,6 +16,9 @@ import (
 	"user-service/pb"
 	"user-service/pkg/db"
 	"user-service/pkg/logger"
+
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 type App struct {
@@ -30,16 +33,6 @@ func NewApp(ctx context.Context) (*App, error) {
 		log.Fatalf("Failed to load config: %v", err)
 		return nil, err
 	}
-
-	fmt.Println()
-	fmt.Println("========= Config ========= ")
-	fmt.Println()
-
-	fmt.Println(cfg)
-
-	fmt.Println()
-	fmt.Println("========= Config ========= ")
-	fmt.Println()
 
 	// logging
 	logger.InitLogger(cfg.App.LogLevel)
@@ -85,6 +78,8 @@ func NewApp(ctx context.Context) (*App, error) {
 	}
 
 	// register gRPC services
+	healthServer := health.NewServer()
+	healthpb.RegisterHealthServer(grpcServer.GrpcServer, healthServer)
 	pb.RegisterUserServiceServer(grpcServer.GrpcServer, grpc.NewUserGRPCHandler(userService))
 
 	return &App{

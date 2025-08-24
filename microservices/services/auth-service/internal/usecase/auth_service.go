@@ -3,6 +3,7 @@ package usecase
 import (
 	"auth-service/pb"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -41,6 +42,10 @@ func (s *authService) Login(ctx context.Context, email, password string) (string
 	if err != nil {
 		fmt.Println("Error getting user by email:", err)
 		return "", err
+	}
+
+	if res.User == nil {
+		return "", errors.New("user not found")
 	}
 
 	return res.User.Id, nil

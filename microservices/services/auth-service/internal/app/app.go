@@ -13,6 +13,7 @@ import (
 	"auth-service/pb"
 	"auth-service/pkg/logger"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,7 +37,7 @@ func NewApp(ctx context.Context) (*App, error) {
 	logger.InitLogger(cfg.App.LogLevel)
 
 	// Initialize gRPC client
-	grpcConn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcConn, err := grpc.NewClient(cfg.Clients.UserService.Target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 		return nil, fmt.Errorf("failed to connect to gRPC server: %w", err)
@@ -59,6 +60,7 @@ func NewApp(ctx context.Context) (*App, error) {
 	})
 
 	httpServer.Use(gin.Recovery())
+	httpServer.Use(cors.Default())
 	httpServer.Use(gin.Logger())
 	httpServer.Use(gin.ErrorLogger())
 

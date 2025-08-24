@@ -879,7 +879,7 @@ var File_user_proto protoreflect.FileDescriptor
 const file_user_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"user.proto\x12\fuser_service\"\xf8\x01\n" +
+	"user.proto\x12\x04user\"\xf8\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
@@ -906,11 +906,12 @@ const file_user_proto_rawDesc = "" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\" \n" +
 	"\x0eGetUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"m\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"e\n" +
 	"\x0fGetUserResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12&\n" +
-	"\x04user\x18\x03 \x01(\v2\x12.user_service.UserR\x04user\"\xc2\x01\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1e\n" +
+	"\x04user\x18\x03 \x01(\v2\n" +
+	".user.UserR\x04user\"\xc2\x01\n" +
 	"\x11UpdateUserRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x14\n" +
@@ -930,11 +931,12 @@ const file_user_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"@\n" +
 	"\x10ListUsersRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06offset\x18\x02 \x01(\x05R\x06offset\"\xf1\x01\n" +
+	"\x06offset\x18\x02 \x01(\x05R\x06offset\"\xe9\x01\n" +
 	"\x11ListUsersResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12(\n" +
-	"\x05users\x18\x03 \x03(\v2\x12.user_service.UserR\x05users\x12\x14\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12 \n" +
+	"\x05users\x18\x03 \x03(\v2\n" +
+	".user.UserR\x05users\x12\x14\n" +
 	"\x05total\x18\x04 \x01(\x03R\x05total\x12\x14\n" +
 	"\x05limit\x18\x05 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x06 \x01(\x05R\x06offset\x12\x19\n" +
@@ -942,21 +944,22 @@ const file_user_proto_rawDesc = "" +
 	"\vnext_offset\x18\b \x01(\x05R\n" +
 	"nextOffset\"-\n" +
 	"\x15GetUserByEmailRequest\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\"i\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"a\n" +
 	"\vApiResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12&\n" +
-	"\x04user\x18\x03 \x01(\v2\x12.user_service.UserR\x04user2\xe4\x03\n" +
-	"\vUserService\x12K\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1e\n" +
+	"\x04user\x18\x03 \x01(\v2\n" +
+	".user.UserR\x04user2\x84\x03\n" +
+	"\vUserService\x12;\n" +
 	"\n" +
-	"CreateUser\x12\x1d.user_service.RegisterRequest\x1a\x1e.user_service.RegisterResponse\x12F\n" +
-	"\aGetUser\x12\x1c.user_service.GetUserRequest\x1a\x1d.user_service.GetUserResponse\x12P\n" +
-	"\x0eGetUserByEmail\x12#.user_service.GetUserByEmailRequest\x1a\x19.user_service.ApiResponse\x12O\n" +
+	"CreateUser\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\x126\n" +
+	"\aGetUser\x12\x14.user.GetUserRequest\x1a\x15.user.GetUserResponse\x12@\n" +
+	"\x0eGetUserByEmail\x12\x1b.user.GetUserByEmailRequest\x1a\x11.user.ApiResponse\x12?\n" +
 	"\n" +
-	"UpdateUser\x12\x1f.user_service.UpdateUserRequest\x1a .user_service.UpdateUserResponse\x12O\n" +
+	"UpdateUser\x12\x17.user.UpdateUserRequest\x1a\x18.user.UpdateUserResponse\x12?\n" +
 	"\n" +
-	"DeleteUser\x12\x1f.user_service.DeleteUserRequest\x1a .user_service.DeleteUserResponse\x12L\n" +
-	"\tListUsers\x12\x1e.user_service.ListUsersRequest\x1a\x1f.user_service.ListUsersResponseB\x06Z\x04./pbb\x06proto3"
+	"DeleteUser\x12\x17.user.DeleteUserRequest\x1a\x18.user.DeleteUserResponse\x12<\n" +
+	"\tListUsers\x12\x16.user.ListUsersRequest\x1a\x17.user.ListUsersResponseB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once
@@ -972,36 +975,36 @@ func file_user_proto_rawDescGZIP() []byte {
 
 var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_user_proto_goTypes = []any{
-	(*User)(nil),                  // 0: user_service.User
-	(*RegisterRequest)(nil),       // 1: user_service.RegisterRequest
-	(*RegisterResponse)(nil),      // 2: user_service.RegisterResponse
-	(*GetUserRequest)(nil),        // 3: user_service.GetUserRequest
-	(*GetUserResponse)(nil),       // 4: user_service.GetUserResponse
-	(*UpdateUserRequest)(nil),     // 5: user_service.UpdateUserRequest
-	(*UpdateUserResponse)(nil),    // 6: user_service.UpdateUserResponse
-	(*DeleteUserRequest)(nil),     // 7: user_service.DeleteUserRequest
-	(*DeleteUserResponse)(nil),    // 8: user_service.DeleteUserResponse
-	(*ListUsersRequest)(nil),      // 9: user_service.ListUsersRequest
-	(*ListUsersResponse)(nil),     // 10: user_service.ListUsersResponse
-	(*GetUserByEmailRequest)(nil), // 11: user_service.GetUserByEmailRequest
-	(*ApiResponse)(nil),           // 12: user_service.ApiResponse
+	(*User)(nil),                  // 0: user.User
+	(*RegisterRequest)(nil),       // 1: user.RegisterRequest
+	(*RegisterResponse)(nil),      // 2: user.RegisterResponse
+	(*GetUserRequest)(nil),        // 3: user.GetUserRequest
+	(*GetUserResponse)(nil),       // 4: user.GetUserResponse
+	(*UpdateUserRequest)(nil),     // 5: user.UpdateUserRequest
+	(*UpdateUserResponse)(nil),    // 6: user.UpdateUserResponse
+	(*DeleteUserRequest)(nil),     // 7: user.DeleteUserRequest
+	(*DeleteUserResponse)(nil),    // 8: user.DeleteUserResponse
+	(*ListUsersRequest)(nil),      // 9: user.ListUsersRequest
+	(*ListUsersResponse)(nil),     // 10: user.ListUsersResponse
+	(*GetUserByEmailRequest)(nil), // 11: user.GetUserByEmailRequest
+	(*ApiResponse)(nil),           // 12: user.ApiResponse
 }
 var file_user_proto_depIdxs = []int32{
-	0,  // 0: user_service.GetUserResponse.user:type_name -> user_service.User
-	0,  // 1: user_service.ListUsersResponse.users:type_name -> user_service.User
-	0,  // 2: user_service.ApiResponse.user:type_name -> user_service.User
-	1,  // 3: user_service.UserService.CreateUser:input_type -> user_service.RegisterRequest
-	3,  // 4: user_service.UserService.GetUser:input_type -> user_service.GetUserRequest
-	11, // 5: user_service.UserService.GetUserByEmail:input_type -> user_service.GetUserByEmailRequest
-	5,  // 6: user_service.UserService.UpdateUser:input_type -> user_service.UpdateUserRequest
-	7,  // 7: user_service.UserService.DeleteUser:input_type -> user_service.DeleteUserRequest
-	9,  // 8: user_service.UserService.ListUsers:input_type -> user_service.ListUsersRequest
-	2,  // 9: user_service.UserService.CreateUser:output_type -> user_service.RegisterResponse
-	4,  // 10: user_service.UserService.GetUser:output_type -> user_service.GetUserResponse
-	12, // 11: user_service.UserService.GetUserByEmail:output_type -> user_service.ApiResponse
-	6,  // 12: user_service.UserService.UpdateUser:output_type -> user_service.UpdateUserResponse
-	8,  // 13: user_service.UserService.DeleteUser:output_type -> user_service.DeleteUserResponse
-	10, // 14: user_service.UserService.ListUsers:output_type -> user_service.ListUsersResponse
+	0,  // 0: user.GetUserResponse.user:type_name -> user.User
+	0,  // 1: user.ListUsersResponse.users:type_name -> user.User
+	0,  // 2: user.ApiResponse.user:type_name -> user.User
+	1,  // 3: user.UserService.CreateUser:input_type -> user.RegisterRequest
+	3,  // 4: user.UserService.GetUser:input_type -> user.GetUserRequest
+	11, // 5: user.UserService.GetUserByEmail:input_type -> user.GetUserByEmailRequest
+	5,  // 6: user.UserService.UpdateUser:input_type -> user.UpdateUserRequest
+	7,  // 7: user.UserService.DeleteUser:input_type -> user.DeleteUserRequest
+	9,  // 8: user.UserService.ListUsers:input_type -> user.ListUsersRequest
+	2,  // 9: user.UserService.CreateUser:output_type -> user.RegisterResponse
+	4,  // 10: user.UserService.GetUser:output_type -> user.GetUserResponse
+	12, // 11: user.UserService.GetUserByEmail:output_type -> user.ApiResponse
+	6,  // 12: user.UserService.UpdateUser:output_type -> user.UpdateUserResponse
+	8,  // 13: user.UserService.DeleteUser:output_type -> user.DeleteUserResponse
+	10, // 14: user.UserService.ListUsers:output_type -> user.ListUsersResponse
 	9,  // [9:15] is the sub-list for method output_type
 	3,  // [3:9] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name

@@ -20,6 +20,7 @@ COPY . .
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+RUN go install github.com/grpc-ecosystem/grpc-health-probe@latest
 
 # Generate protobuf code
 RUN make proto
@@ -44,6 +45,8 @@ WORKDIR /app
 COPY --from=builder /app/bin/server .
 COPY configs /app/configs
 COPY migrations /app/migrations
+COPY --from=builder /go/bin/grpc-health-probe /bin/grpc-health-probe
+RUN chmod +x /bin/grpc-health-probe
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
@@ -55,8 +58,8 @@ USER appuser
 EXPOSE 50051 8080
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8000/health || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD ["/bin/grpc-health-probe","--addr=localhost:50051"]
 
 # Run the application
 CMD ["./server"]

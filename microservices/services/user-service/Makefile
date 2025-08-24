@@ -35,6 +35,9 @@ install-proto:
 	go install github.com/envoyproxy/protoc-gen-validate@latest
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 
+health-check:
+	grpc-health-probe --addr=localhost:50051
+
 # Docker build
 docker-build:
 	docker build -t user-service .
