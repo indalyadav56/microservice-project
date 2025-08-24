@@ -1,0 +1,74 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: auth-service
+spec:
+  type: backend
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  providesApis: [user-grpc-api]
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: auth-api
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  definition:
+    $text: |
+      openapi: 3.0.0
+      info:
+        title: Auth API
+        version: 1.0.0
+      paths:
+        /login:
+          post:
+            summary: User login
+            requestBody:
+              required: true
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      password:
+                        type: string
+            responses:
+              '200':
+                description: Successful login
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        token:
+                          type: string
+              '401':
+                description: Unauthorized
+        /register:
+          post:
+            summary: User registration
+            requestBody:
+              required: true
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      password:
+                        type: string
+                      email:
+                        type: string
+            responses:
+              '201':
+                description: User created successfully
+              '400':
+                description: Bad request
