@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { setCookie } from "@/lib/utils"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -58,6 +59,9 @@ export default function LoginPage() {
       
       // TODO: Replace with actual authentication logic
       console.log("Login attempt:", formData)
+      
+      // Set authentication cookie
+      setCookie('auth_token', `demo_token_${Date.now()}`, formData.rememberMe ? 30 : 1)
       
       toast.success("Login successful! Redirecting...")
       
