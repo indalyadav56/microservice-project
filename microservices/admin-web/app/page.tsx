@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
 import { useRBACStore } from '@/lib/store/rbac-store'
 import { mockData } from '@/lib/api/rbac-api'
-import { Users, Shield, Key, TrendingUp, Activity, UserCheck, UserX } from 'lucide-react'
+import { Users, Shield, Key, TrendingUp, Activity, UserCheck } from 'lucide-react'
 import Link from 'next/link'
 
 export default function DashboardPage() {

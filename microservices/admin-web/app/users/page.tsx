@@ -30,7 +30,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import {
   Select,
@@ -41,14 +40,15 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { useRBACStore } from '@/lib/store/rbac-store'
+import { useRBACStore, User } from '@/lib/store/rbac-store'
 import { Users, Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Mail, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 
 export default function UsersPage() {
   const { users, roles, updateUser, deleteUser, toggleUserStatus } = useRBACStore()
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [editingUser, setEditingUser] = useState<Partial<User>>({})
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
@@ -59,20 +59,24 @@ export default function UsersPage() {
     user.role.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleEditUser = (user: any) => {
+  const handleEditUser = (user: User) => {
     setSelectedUser(user)
+    setEditingUser(user)
     setIsEditDialogOpen(true)
   }
 
-  const handleDeleteUser = (user: any) => {
+  const handleDeleteUser = (user: User) => {
     setSelectedUser(user)
     setIsDeleteDialogOpen(true)
   }
 
-  const handleSaveUser = (updatedUser: any) => {
-    updateUser(selectedUser.id, updatedUser)
-    setIsEditDialogOpen(false)
-    setSelectedUser(null)
+  const handleSaveUser = () => {
+    if (selectedUser) {
+      updateUser(selectedUser.id, editingUser)
+      setIsEditDialogOpen(false)
+      setSelectedUser(null)
+      setEditingUser({})
+    }
   }
 
   const handleConfirmDelete = () => {
@@ -348,7 +352,7 @@ export default function UsersPage() {
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => handleSaveUser(selectedUser)}>
+              <Button onClick={handleSaveUser}>
                 Save Changes
               </Button>
             </DialogFooter>

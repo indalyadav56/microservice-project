@@ -3,29 +3,44 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Eye, EyeOff, Mail, Lock, Loader2, Shield, Users } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, Loader2, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
-    rememberMe: false,
+    confirmPassword: "",
+    agreeToTerms: false,
   })
   const [errors, setErrors] = useState<{
+    firstName?: string
+    lastName?: string
     email?: string
     password?: string
+    confirmPassword?: string
   }>({})
 
   const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {}
+    const newErrors: { firstName?: string; lastName?: string; email?: string; password?: string; confirmPassword?: string } = {}
+
+    if (!formData.firstName) {
+      newErrors.firstName = "First name is required"
+    }
+
+    if (!formData.lastName) {
+      newErrors.lastName = "Last name is required"
+    }
 
     if (!formData.email) {
       newErrors.email = "Email is required"
@@ -37,6 +52,12 @@ export default function LoginPage() {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters"
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password"
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match"
     }
 
     setErrors(newErrors)
@@ -56,18 +77,18 @@ export default function LoginPage() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // TODO: Replace with actual authentication logic
-      console.log("Login attempt:", formData)
+      // TODO: Replace with actual registration logic
+      console.log("Registration attempt:", formData)
       
-      toast.success("Login successful! Redirecting...")
+      toast.success("Registration successful! Please check your email to verify your account.")
       
-      // Redirect to dashboard after successful login
+      // Redirect to login after successful registration
       setTimeout(() => {
-        router.push("/")
+        router.push("/login")
       }, 1000)
       
-    } catch (error) {
-      toast.error("Login failed. Please check your credentials.")
+    } catch {
+      toast.error("Registration failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -93,65 +114,92 @@ export default function LoginPage() {
             </div>
             <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
           </div>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <p className="text-muted-foreground">Create your account</p>
         </div>
 
-        {/* Login Card */}
+        {/* Register Card */}
         <Card className="shadow-xl border-0 bg-background/80 backdrop-blur-sm">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl font-semibold text-center">
-              Welcome back
-            </CardTitle>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center">Sign up</CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access the admin panel
+              Enter your information to create an account
             </CardDescription>
           </CardHeader>
-          
-          <CardContent className="space-y-4">
+          <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First name</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={(e) => handleInputChange("firstName", e.target.value)}
+                    className={errors.firstName ? "border-red-500" : ""}
+                    disabled={isLoading}
+                  />
+                  {errors.firstName && (
+                    <p className="text-sm text-red-500">{errors.firstName}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last name</Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={(e) => handleInputChange("lastName", e.target.value)}
+                    className={errors.lastName ? "border-red-500" : ""}
+                    disabled={isLoading}
+                  />
+                  {errors.lastName && (
+                    <p className="text-sm text-red-500">{errors.lastName}</p>
+                  )}
+                </div>
+              </div>
+
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email address
-                </Label>
+                <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="john@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={`pl-10 ${errors.email ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
                     disabled={isLoading}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
+                  <p className="text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
-                    className={`pl-10 pr-10 ${errors.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
                     disabled={isLoading}
                   />
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
                   >
@@ -163,46 +211,79 @@ export default function LoginPage() {
                   </Button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password}</p>
+                  <p className="text-sm text-red-500">{errors.password}</p>
                 )}
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="remember"
-                    type="checkbox"
-                    checked={formData.rememberMe}
-                    onChange={(e) => handleInputChange("rememberMe", e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              {/* Confirm Password Field */}
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                    className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
                     disabled={isLoading}
                   />
-                  <Label htmlFor="remember" className="text-sm text-muted-foreground">
-                    Remember me
-                  </Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={isLoading}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-primary hover:underline transition-colors"
-                >
-                  Forgot password?
-                </Link>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                )}
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={formData.agreeToTerms}
+                  onChange={(e) => handleInputChange("agreeToTerms", e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  disabled={isLoading}
+                />
+                <Label htmlFor="terms" className="text-sm text-muted-foreground">
+                  I agree to the{" "}
+                  <Link href="/terms" className="text-primary hover:underline">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="text-primary hover:underline">
+                    Privacy Policy
+                  </Link>
+                </Label>
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full h-11"
-                disabled={isLoading}
+                disabled={isLoading || !formData.agreeToTerms}
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Signing in...
+                    Creating account...
                   </>
                 ) : (
-                  "Sign in"
+                  "Create account"
                 )}
               </Button>
             </form>
@@ -250,14 +331,14 @@ export default function LoginPage() {
               </Button>
             </div>
 
-            {/* Sign Up Link */}
+            {/* Sign In Link */}
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">Already have an account? </span>
               <Link
-                href="/register"
+                href="/login"
                 className="text-primary hover:underline font-medium transition-colors"
               >
-                Sign up
+                Sign in
               </Link>
             </div>
           </CardContent>

@@ -39,7 +39,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import { useRBACStore } from '@/lib/store/rbac-store'
+import { useRBACStore, Permission } from '@/lib/store/rbac-store'
 import { Key, Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Calendar, Shield } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -48,12 +48,12 @@ export default function PermissionsPage() {
     permissions, 
     roles, 
     updatePermission, 
-    deletePermission,
-    getPermissionsByRole
+    deletePermission
   } = useRBACStore()
   
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedPermission, setSelectedPermission] = useState<any>(null)
+  const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null)
+  const [editingPermission, setEditingPermission] = useState<Partial<Permission>>({})
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -71,20 +71,24 @@ export default function PermissionsPage() {
     permission.action.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleEditPermission = (permission: any) => {
+  const handleEditPermission = (permission: Permission) => {
     setSelectedPermission(permission)
+    setEditingPermission(permission)
     setIsEditDialogOpen(true)
   }
 
-  const handleDeletePermission = (permission: any) => {
+  const handleDeletePermission = (permission: Permission) => {
     setSelectedPermission(permission)
     setIsDeleteDialogOpen(true)
   }
 
-  const handleSavePermission = (updatedPermission: any) => {
-    updatePermission(selectedPermission.id, updatedPermission)
-    setIsEditDialogOpen(false)
-    setSelectedPermission(null)
+  const handleSavePermission = () => {
+    if (selectedPermission) {
+      updatePermission(selectedPermission.id, editingPermission)
+      setIsEditDialogOpen(false)
+      setSelectedPermission(null)
+      setEditingPermission({})
+    }
   }
 
   const handleCreatePermission = () => {
@@ -397,24 +401,24 @@ export default function PermissionsPage() {
                   <Label htmlFor="name">Permission Name</Label>
                   <Input
                     id="name"
-                    defaultValue={selectedPermission.name}
-                    onChange={(e) => setSelectedPermission({ ...selectedPermission, name: e.target.value })}
+                    value={editingPermission.name || ''}
+                    onChange={(e) => setEditingPermission({ ...editingPermission, name: e.target.value })}
                   />
                 </div>
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
                     id="description"
-                    defaultValue={selectedPermission.description}
-                    onChange={(e) => setSelectedPermission({ ...selectedPermission, description: e.target.value })}
+                    value={editingPermission.description || ''}
+                    onChange={(e) => setEditingPermission({ ...editingPermission, description: e.target.value })}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="resource">Resource</Label>
                     <Select
-                      defaultValue={selectedPermission.resource}
-                      onValueChange={(value) => setSelectedPermission({ ...selectedPermission, resource: value })}
+                      value={editingPermission.resource || ''}
+                      onValueChange={(value) => setEditingPermission({ ...editingPermission, resource: value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -431,8 +435,8 @@ export default function PermissionsPage() {
                   <div>
                     <Label htmlFor="action">Action</Label>
                     <Select
-                      defaultValue={selectedPermission.action}
-                      onValueChange={(value) => setSelectedPermission({ ...selectedPermission, action: value })}
+                      value={editingPermission.action || ''}
+                      onValueChange={(value) => setEditingPermission({ ...editingPermission, action: value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -453,7 +457,7 @@ export default function PermissionsPage() {
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => handleSavePermission(selectedPermission)}>
+              <Button onClick={handleSavePermission}>
                 Save Changes
               </Button>
             </DialogFooter>

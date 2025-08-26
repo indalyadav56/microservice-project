@@ -1,4 +1,17 @@
 services:
+  admin-web:
+    build:
+      dockerfile: Dockerfile
+      context: ./admin-web
+    container_name: admin-web
+    expose:
+      - "3000"
+    depends_on:
+      - nginx
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -60,7 +73,7 @@ services:
   # User Service
   user-service:
     build:
-      context: ./services/user-service
+      context: ./user-service
       dockerfile: Dockerfile
     container_name: user-service
     environment:
@@ -92,7 +105,7 @@ services:
   # Auth Service
   auth-service:
     build:
-      context: ./services/auth-service
+      context: ./auth-service
       dockerfile: Dockerfile
     container_name: auth-service
     ports:
@@ -120,7 +133,7 @@ services:
   # Role Service
   # role-service:
   #   build:
-  #     context: ./services/role-service
+  #     context: ./role-service
   #     dockerfile: Dockerfile
   #   container_name: role-service
   #   environment:
@@ -145,7 +158,7 @@ services:
   # Permission Service
   # permission-service:
   #   build:
-  #     context: ./services/permission-service
+  #     context: ./permission-service
   #     dockerfile: Dockerfile
   #   container_name: permission-service
   #   environment:

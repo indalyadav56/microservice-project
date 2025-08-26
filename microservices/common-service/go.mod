@@ -1,4 +1,4 @@
-module common-service
+module github.com/indalyadav56/rbac/microservices/common-service
 
 go 1.25.0
 

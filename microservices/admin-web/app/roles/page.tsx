@@ -31,16 +31,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useRBACStore } from '@/lib/store/rbac-store'
+import { useRBACStore, Role } from '@/lib/store/rbac-store'
 import { Shield, Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Users, Key, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -48,7 +42,6 @@ export default function RolesPage() {
   const { 
     roles, 
     permissions, 
-    users, 
     updateRole, 
     deleteRole, 
     assignPermissionToRole, 
@@ -58,7 +51,8 @@ export default function RolesPage() {
   } = useRBACStore()
   
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedRole, setSelectedRole] = useState<any>(null)
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null)
+  const [editingRole, setEditingRole] = useState<Partial<Role>>({})
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false)
@@ -68,25 +62,29 @@ export default function RolesPage() {
     role.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleEditRole = (role: any) => {
+  const handleEditRole = (role: Role) => {
     setSelectedRole(role)
+    setEditingRole(role)
     setIsEditDialogOpen(true)
   }
 
-  const handleDeleteRole = (role: any) => {
+  const handleDeleteRole = (role: Role) => {
     setSelectedRole(role)
     setIsDeleteDialogOpen(true)
   }
 
-  const handleManagePermissions = (role: any) => {
+  const handleManagePermissions = (role: Role) => {
     setSelectedRole(role)
     setIsPermissionsDialogOpen(true)
   }
 
-  const handleSaveRole = (updatedRole: any) => {
-    updateRole(selectedRole.id, updatedRole)
-    setIsEditDialogOpen(false)
-    setSelectedRole(null)
+  const handleSaveRole = () => {
+    if (selectedRole) {
+      updateRole(selectedRole.id, editingRole)
+      setIsEditDialogOpen(false)
+      setSelectedRole(null)
+      setEditingRole({})
+    }
   }
 
   const handleConfirmDelete = () => {
@@ -327,7 +325,7 @@ export default function RolesPage() {
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => handleSaveRole(selectedRole)}>
+              <Button onClick={handleSaveRole}>
                 Save Changes
               </Button>
             </DialogFooter>
