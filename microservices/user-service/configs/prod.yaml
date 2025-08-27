@@ -11,12 +11,24 @@ grpc:
   port: 9090
 
 database:
-  name: "users"
-  host: "postgres"
-  port: 5432
-  username: "postgres"
-  password: "postgres"
-  ssl_mode: "require"
+  postgres:
+    name: "users"
+    host: "postgres"
+    port: 5432
+    username: "postgres"
+    password: "postgres"
+    ssl_mode: "require"
+    max_open_conns: 25
+    max_idle_conns: 25
+    conn_max_lifetime: "30m"
+  mongodb:
+    uri: "mongodb://localhost:27017"
+    database: "users"
+    username: "mongo_admin"
+    password: "mongo_pass"
+    auth_source: "admin"
+    timeout: "10s"
+    max_pool_size: 50
 
 admin:
   email: "admin@example.com"

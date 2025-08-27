@@ -11,40 +11,21 @@ import (
 )
 
 type Config struct {
-	Host           string        `json:"host" yaml:"host"`
-	Port           int           `json:"port" yaml:"port"`
-	Username       string        `json:"username" yaml:"username"`
-	Password       string        `json:"password" yaml:"password"`
+	URI            string        `json:"uri" yaml:"uri"`
 	Database       string        `json:"database" yaml:"database"`
 	MaxPoolSize    int           `json:"max_pool_size" yaml:"max_pool_size"`
 	ConnectTimeout time.Duration `json:"connect_timeout" yaml:"connect_timeout"`
 }
 
-type mongoClient struct {
-	client *mongo.Client
-	db     *mongo.Database
+type MongoClient struct {
+	Client *mongo.Client
+	DB     *mongo.Database
 }
 
-func NewMongoDBClient(cfg Config) (*mongoClient, error) {
-	// Validate configuration
-	if cfg.Host == "" || cfg.Port == 0 || cfg.Database == "" {
-		return nil, fmt.Errorf("missing required MongoDB configuration: host, port, or database")
-	}
-
-	// Create connection URI
-	uri := fmt.Sprintf(
-		"mongodb://%s:%s@%s:%d/%s?connectTimeoutMS=%d",
-		cfg.Username,
-		cfg.Password,
-		cfg.Host,
-		cfg.Port,
-		cfg.Database,
-		cfg.ConnectTimeout.Milliseconds(),
-	)
-
+func NewMongoDBClient(cfg Config) (*MongoClient, error) {
 	// Set up client options
 	opts := options.Client().
-		ApplyURI(uri).
+		ApplyURI(cfg.URI).
 		SetMaxPoolSize(uint64(cfg.MaxPoolSize)).
 		SetConnectTimeout(cfg.ConnectTimeout)
 
@@ -59,29 +40,31 @@ func NewMongoDBClient(cfg Config) (*mongoClient, error) {
 		return nil, fmt.Errorf("failed to ping MongoDB: %w", err)
 	}
 
-	// Create database instance
-	db := client.Database(cfg.Database)
-
-	return &mongoClient{
-		client: client,
-		db:     db,
+	return &MongoClient{
+		Client: client,
+		DB:     client.Database(cfg.Database),
 	}, nil
 }
 
-// DB returns the current database instance
-func (c *mongoClient) DB() *mongo.Database {
-	return c.db
-}
-
 // Close terminates the MongoDB connection
-func (c *mongoClient) Close() error {
-	if c.client == nil {
+func (c *MongoClient) Close() error {
+	if c.Client == nil {
 		return nil
 	}
-	return c.client.Disconnect(context.TODO())
+	return c.Client.Disconnect(context.TODO())
 }
 
 // Ping checks the health of the MongoDB connection
-func (c *mongoClient) Ping() error {
-	return c.client.Ping(context.TODO(), readpref.Primary())
+func (c *MongoClient) Ping() error {
+	return c.Client.Ping(context.TODO(), readpref.Primary())
+}
+
+func (c *MongoClient) CreateCollection(name string) error {
+	if c.DB == nil {
+		return fmt.Errorf("database is not initialized")
+	}
+	if err := c.DB.CreateCollection(context.TODO(), name); err != nil {
+		return fmt.Errorf("failed to create collection: %w", err)
+	}
+	return nil
 }
