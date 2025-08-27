@@ -51,6 +51,7 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	// ---- delivery layer ----
 	httpServer := gin.Default()
+	httpServer.Use(cors.Default())
 
 	// Health check endpoint
 	httpServer.GET("/health", func(c *gin.Context) {
@@ -60,7 +61,6 @@ func NewApp(ctx context.Context) (*App, error) {
 	})
 
 	httpServer.Use(gin.Recovery())
-	httpServer.Use(cors.Default())
 	httpServer.Use(gin.Logger())
 	httpServer.Use(gin.ErrorLogger())
 

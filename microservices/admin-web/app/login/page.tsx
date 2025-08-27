@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { setCookie } from "@/lib/utils"
+import axios from "axios"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -45,18 +46,29 @@ export default function LoginPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault()
     
-    if (!validateForm()) {
-      return
-    }
+    // if (!validateForm()) {
+    //   return
+    // }
 
     setIsLoading(true)
+
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
+    console.log("NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL);
+    console.log("NEXT_PUBLIC_API_BASE_URL", process.env.NEXT_PUBLIC_API_BASE_URL);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      axios.post(`${baseUrl}/v1/auth/login`, {
+        email: formData.email,
+        password: formData.password}).then(response => {
+        console.log(response);
+      }).catch(error => {
+        console.error('There was an error!', error);
+      });
+
       // TODO: Replace with actual authentication logic
       console.log("Login attempt:", formData)
       

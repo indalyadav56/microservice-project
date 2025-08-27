@@ -15,3 +15,4 @@
 {"time":"2025-08-22T16:02:53.244199+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
 {"time":"2025-08-22T16:08:43.473997+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
 {"time":"2025-08-22T16:08:54.773532+05:30","level":"INFO","msg":"failed to create app: failed to create gRPC client"}
+{"time":"2025-08-27T12:01:08.236434+05:30","level":"INFO","msg":"app run error: http server stopped: listen tcp :8081: bind: address already in use"}

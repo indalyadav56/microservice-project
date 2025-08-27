@@ -1,43 +1,35 @@
 services:
+  web-nginx:
+    image: nginx:alpine
+    container_name: web_nginx
+    ports:
+      - "80:80"
+      # - "443:443"
+    volumes:
+      - ./nginx/web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - admin-web
+      
   admin-web:
     build:
       dockerfile: Dockerfile
       context: ./admin-web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: "http://localhost:81"
     container_name: admin-web
     expose:
       - "3000"
-    depends_on:
-      - nginx
-    networks:
-      - microservice-network
-    restart: unless-stopped
-
-  nginx:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      
+  api-nginx:
     image: nginx:alpine
-    container_name: nginx
+    container_name: api-nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "81:80"
+      # - "443:443"
     volumes:
       - ./nginx/api.nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - postgres
-      - user-service
-      - auth-service
-      # - role-service
-      # - permission-service
-    networks:
-      - microservice-network
-    restart: unless-stopped
-  
-  web_nginx:
-    image: nginx:alpine
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/web.nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - postgres
       - user-service
@@ -92,6 +84,8 @@ services:
       context: ./user-service
       dockerfile: Dockerfile
     container_name: user-service
+    expose:
+      - "8080"
     environment:
       - APP_NAME=user-service
       - APP_LOG_LEVEL=debug
@@ -124,8 +118,8 @@ services:
       context: ./auth-service
       dockerfile: Dockerfile
     container_name: auth-service
-    ports:
-      - "8081:8081"
+    expose:
+      - "8081"
     environment:
       - APP_NAME=user-service
       - APP_LOG_LEVEL=debug
