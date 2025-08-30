@@ -1,0 +1,32 @@
+{
+    "apis": [
+        {
+            "id": "petstore",
+            "name": "Petstore API",
+            "url": "https://petstore.swagger.io/v2/swagger.json",
+            "description": "Sample Petstore API for testing",
+            "isActive": true
+        },
+        {
+            "id": "stripe",
+            "name": "Stripe API",
+            "url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+            "description": "Stripe Payment API",
+            "isActive": true
+        },
+        {
+            "id": "github",
+            "name": "GitHub API",
+            "url": "https://api.github.com/",
+            "description": "GitHub REST API v3",
+            "isActive": true
+        },
+        {
+            "id": "custom-example",
+            "name": "Custom Example API",
+            "url": "https://api.example.com/openapi.json",
+            "description": "Example of a custom API endpoint",
+            "isActive": false
+        }
+    ]
+}

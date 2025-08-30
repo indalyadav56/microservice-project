@@ -1,11 +1,7 @@
-create kubernetes operator to overcom unneccesary kubernetes config.
+create kubernetes operator to overcom unneccesary kubernetes config for each service.
 
 multi-region user feature add
 
-
-
-features:
- auth(login, register) done
 
 TODO:
     get users for admin role only
